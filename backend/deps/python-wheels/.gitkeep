@@ -1,0 +1,4 @@
+# This directory is optional - for local Python wheel files
+# Only needed if NOT using Nexus repository for Python packages
+#
+# To download wheels: pip download -r ../requirements.txt -d .

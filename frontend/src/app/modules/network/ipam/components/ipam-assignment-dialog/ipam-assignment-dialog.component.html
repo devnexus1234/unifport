@@ -1,0 +1,44 @@
+<h1 mat-dialog-title>Edit IP: {{data.ipAddress}}</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form" class="edit-form">
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+                <mat-option *ngFor="let s of statuses" [value]="s">
+                    {{s}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>RITM</mat-label>
+            <input matInput formControlName="ritm" placeholder="e.g. RITM0012345">
+            <mat-error *ngIf="form.get('ritm')?.hasError('pattern')">
+                Format must be RITM followed by 7 digits (e.g. RITM1234567)
+            </mat-error>
+            <mat-error *ngIf="form.get('ritm')?.hasError('required')">
+                RITM is required
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Source</mat-label>
+            <input matInput formControlName="source" placeholder="Source system or user">
+            <mat-error *ngIf="form.get('source')?.hasError('required')">
+                Source is required
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Comment</mat-label>
+            <textarea matInput formControlName="comment" rows="3"></textarea>
+            <mat-error *ngIf="form.get('comment')?.hasError('required')">
+                Comment is required
+            </mat-error>
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="save()">Save</button>
+</div>

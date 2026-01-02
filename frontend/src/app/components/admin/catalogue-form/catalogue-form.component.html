@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>
+  {{ mode === 'create' ? 'Create New Catalogue' : 'Edit Catalogue' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="catalogueForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required>
+      <mat-error *ngIf="catalogueForm.get('name')?.hasError('required')">
+        Name is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+    </mat-form-field>
+
+    <!-- Menu field removed -->
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="category_id" required>
+        <mat-option *ngFor="let category of categories" [value]="category.id">
+          {{ category.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="catalogueForm.get('category_id')?.hasError('required')">
+        Category is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>API Endpoint</mat-label>
+      <input matInput formControlName="api_endpoint" placeholder="/api/v1/catalogues/example">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Frontend Route</mat-label>
+      <input matInput formControlName="frontend_route" placeholder="/catalogues/example">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Icon</mat-label>
+      <input matInput formControlName="icon" placeholder="description">
+      <mat-hint>Material icon name</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Display Order</mat-label>
+      <input matInput type="number" formControlName="display_order">
+    </mat-form-field>
+
+    <mat-checkbox formControlName="is_enabled" *ngIf="mode === 'edit'">
+      Enable Catalogue
+    </mat-checkbox>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="catalogueForm.invalid || isLoading">
+    {{ mode === 'create' ? 'Create' : 'Update' }}
+  </button>
+</mat-dialog-actions>

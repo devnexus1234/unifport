@@ -1,0 +1,90 @@
+<div class="user-role-management-container">
+  <div class="header">
+    <h2>User Management</h2>
+  </div>
+
+  <div class="content" *ngIf="!loading; else loadingTemplate">
+    <div class="users-section">
+      <h3>Users</h3>
+      <mat-list>
+        <mat-list-item *ngFor="let user of users" [class.selected]="selectedUser?.id === user.id"
+          (click)="selectUser(user)" class="user-item">
+          <mat-icon matListItemIcon>person</mat-icon>
+          <div matListItemTitle>{{ user.username }}</div>
+          <div matListItemLine>{{ user.email }}</div>
+          <div matListItemLine *ngIf="user.roles && user.roles.length > 0">
+            <span class="role-badge" *ngFor="let role of user.roles">{{ role.name }}</span>
+          </div>
+          <mat-icon *ngIf="user.is_admin" matListItemIcon class="admin-icon"
+            matTooltip="Admin User">verified_user</mat-icon>
+        </mat-list-item>
+      </mat-list>
+    </div>
+
+    <div class="roles-section" *ngIf="selectedUser">
+      <div class="user-header">
+        <h3>User Settings: {{ selectedUser.username }}</h3>
+
+        <div class="user-flags">
+          <mat-slide-toggle [checked]="selectedUser.is_admin" [disabled]="isSelfModification()"
+            (change)="toggleAdminStatus($event.checked)" color="primary">
+            Is Admin
+          </mat-slide-toggle>
+        </div>
+      </div>
+
+      <div class="alert-warning" *ngIf="isSelfModification()">
+        <mat-icon>warning</mat-icon>
+        <span>You cannot modify your own roles or admin status.</span>
+      </div>
+
+      <div class="current-roles">
+        <h4>Assigned Roles</h4>
+        <div *ngIf="userRoles.length === 0" class="no-roles">
+          No roles assigned
+        </div>
+        <mat-list *ngIf="userRoles.length > 0">
+          <mat-list-item *ngFor="let role of userRoles" class="assigned-role-item">
+            <mat-icon matListItemIcon>badge</mat-icon>
+            <div matListItemTitle>{{ role.name }}</div>
+            <div matListItemLine *ngIf="role.description">{{ role.description }}</div>
+            <button mat-icon-button matListItemMeta (click)="removeRole(role)" [disabled]="isSelfModification()"
+              matTooltip="Remove role" color="warn" class="remove-button">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-list-item>
+        </mat-list>
+      </div>
+
+      <div class="available-roles">
+        <h4>Available Roles</h4>
+        <mat-list>
+          <mat-list-item *ngFor="let role of getAvailableRoles()">
+            <mat-icon matListItemIcon>badge</mat-icon>
+            <div matListItemTitle>{{ role.name }}</div>
+            <div matListItemLine *ngIf="role.description">{{ role.description }}</div>
+            <button mat-icon-button matListItemMeta (click)="assignRole(role)" [disabled]="isSelfModification()"
+              matTooltip="Assign role">
+              <mat-icon>add</mat-icon>
+            </button>
+          </mat-list-item>
+          <div *ngIf="getAvailableRoles().length === 0" class="no-roles">
+            All roles are assigned
+          </div>
+        </mat-list>
+      </div>
+    </div>
+
+    <div class="no-selection" *ngIf="!selectedUser">
+      <mat-icon>person_search</mat-icon>
+      <p>Select a user to manage their roles and permissions</p>
+    </div>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading...</p>
+    </div>
+  </ng-template>
+</div>

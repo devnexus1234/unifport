@@ -1,0 +1,89 @@
+<div class="app-container">
+  <mat-toolbar class="main-toolbar" *ngIf="isAuthenticated">
+    <div class="app-branding">
+      <img src="assets/images/company-logo.png" alt="Company Logo" class="company-logo">
+      <span class="app-title">Unified Management Portal</span>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+      <button mat-button routerLink="/dashboard" routerLinkActive="active"
+        [class.dashboard-active]="router.url === '/dashboard' || router.url === '/'" (click)="selectDashboard()"
+        class="nav-button">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </button>
+
+      <!-- Categories Dropdown -->
+      <button mat-button [matMenuTriggerFor]="categoriesMenu" class="nav-button categories-button"
+        [class.active]="selectedCategory !== null">
+        <mat-icon>apps</mat-icon>
+        <span>Categories</span>
+        <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #categoriesMenu="matMenu" class="categories-menu">
+        <button mat-menu-item *ngFor="let category of categories"
+          [class.selected]="selectedCategory?.id === category.id" (click)="selectCategoryFromDropdown(category)">
+          <mat-icon>{{ category.icon || 'folder' }}</mat-icon>
+          <span>{{ category.name }}</span>
+        </button>
+        <mat-divider *ngIf="categories.length > 0"></mat-divider>
+        <button mat-menu-item disabled *ngIf="categories.length === 0">
+          <span>No categories available</span>
+        </button>
+      </mat-menu>
+
+      <!-- Admin Button -->
+      <button mat-button routerLink="/admin" routerLinkActive="active" *ngIf="currentUser?.is_admin" class="nav-button">
+        <mat-icon>admin_panel_settings</mat-icon>
+        <span>Admin</span>
+      </button>
+    </div>
+
+    <span class="spacer"></span>
+
+    <!-- Debug Mode Chip -->
+    <div *ngIf="isDebugMode" class="debug-chip">
+      <mat-icon class="debug-icon">bug_report</mat-icon>
+      <span>DEBUG MODE</span>
+    </div>
+
+    <!-- Admin Capsule -->
+    <div *ngIf="isUserAdmin()" class="admin-capsule">
+      <mat-icon class="admin-icon">verified_user</mat-icon>
+      <span>ADMIN</span>
+    </div>
+
+    <!-- User Actions -->
+    <div class="user-actions">
+      <span class="user-info" *ngIf="currentUser">
+        <mat-icon>account_circle</mat-icon>
+        <span class="user-name">{{ currentUser.username }}</span>
+      </span>
+      <button mat-icon-button (click)="toggleTheme()" matTooltip="Toggle theme" *ngIf="enableThemeToggle"
+        class="action-button">
+        <mat-icon>{{ currentTheme === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+      <button mat-icon-button (click)="logout()" matTooltip="Logout" class="action-button">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar>
+
+  <!-- Header Separator -->
+  <div class="header-separator" *ngIf="isAuthenticated">
+    <div class="sep-block blue"></div>
+    <div class="sep-block red"></div>
+    <div class="sep-block orange"></div>
+    <div class="sep-block yellow"></div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content" *ngIf="isAuthenticated">
+    <router-outlet></router-outlet>
+  </div>
+
+  <div class="main-content" *ngIf="!isAuthenticated">
+    <router-outlet></router-outlet>
+  </div>
+</div>

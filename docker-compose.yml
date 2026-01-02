@@ -1,0 +1,110 @@
+# version is obsolete in docker-compose v2+
+
+services:
+  # Oracle Database
+  oracle:
+    image: gvenzl/oracle-xe:latest
+    container_name: unified-portal-oracle
+    environment:
+      ORACLE_PASSWORD: umd123
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD-SHELL", "sqlplus -s / as sysdba <<< \"SELECT 1 FROM DUAL;\" | grep -q \"1\" || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    networks:
+      - unified-portal-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: unified-portal-backend
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - DATABASE_URL=oracle+cx_oracle://umduser:umd123@oracle:1521/?service_name=XEPDB1
+      - ORACLE_USER=umduser
+      - ORACLE_PASSWORD=umd123
+      - ORACLE_HOST=oracle
+      - ORACLE_PORT=1521
+      - ORACLE_SERVICE=XEPDB1
+    env_file:
+      - ./backend/.env.${ENVIRONMENT:-dev}
+    ports:
+      - "8000:8000"
+    depends_on:
+      oracle:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - backend-logs:/app/logs
+    networks:
+      - unified-portal-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: unified-portal-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - unified-portal-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: unified-portal-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - nginx-logs:/var/log/nginx
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - unified-portal-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  oracle-data:
+    driver: local
+  backend-logs:
+    driver: local
+  nginx-logs:
+    driver: local
+
+networks:
+  unified-portal-network:
+    driver: bridge

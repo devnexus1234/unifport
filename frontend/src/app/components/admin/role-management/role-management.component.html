@@ -1,0 +1,176 @@
+<div class="role-management-container">
+  <h2>Role Management</h2>
+  <p class="description">Create and manage roles, assign permissions to menus and catalogues. Users can be assigned roles via backend/database only.</p>
+
+  <div class="content-layout">
+    <!-- Roles List -->
+    <div class="roles-panel">
+      <div class="panel-header">
+        <h3>Roles</h3>
+        <button mat-raised-button color="primary" (click)="showCreateForm = !showCreateForm">
+          <mat-icon>add</mat-icon>
+          New Role
+        </button>
+      </div>
+
+      <!-- Create Role Form -->
+      <div class="create-form" *ngIf="showCreateForm">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Role Name</mat-label>
+          <input matInput [(ngModel)]="newRoleName" placeholder="e.g., Storage Admin">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput [(ngModel)]="newRoleDescription" rows="2" placeholder="Role description"></textarea>
+        </mat-form-field>
+        <div class="form-actions">
+          <button mat-button (click)="showCreateForm = false">Cancel</button>
+          <button mat-raised-button color="primary" (click)="createRole()">Create</button>
+        </div>
+      </div>
+
+      <!-- Roles List -->
+      <mat-list *ngIf="!loading">
+        <mat-list-item *ngFor="let role of roles" 
+                       [class.selected]="selectedRole?.id === role.id"
+                       (click)="selectRole(role)">
+          <mat-icon matListItemIcon>badge</mat-icon>
+          <div matListItemTitle>{{ role.name }}</div>
+          <div matListItemLine *ngIf="role.description">{{ role.description }}</div>
+          <button mat-icon-button 
+                  (click)="startEditRole(role); $event.stopPropagation()"
+                  matTooltip="Edit role">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button 
+                  color="warn"
+                  (click)="deleteRole(role); $event.stopPropagation()"
+                  matTooltip="Delete role">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+
+      <div *ngIf="loading" class="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    </div>
+
+    <!-- Role Details & Permissions -->
+    <div class="permissions-panel" *ngIf="selectedRole">
+      <div class="panel-header">
+        <h3>{{ selectedRole.name }}</h3>
+        <button mat-icon-button (click)="selectedRole = null">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="role-info">
+        <p *ngIf="selectedRole.description">{{ selectedRole.description }}</p>
+        <p class="hint">Edit role details by clicking the edit icon in the roles list.</p>
+      </div>
+
+      <!-- Edit Role Form -->
+      <div class="edit-form" *ngIf="editingRole && editingRole.id === selectedRole.id">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Role Name</mat-label>
+          <input matInput [(ngModel)]="editRoleName">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput [(ngModel)]="editRoleDescription" rows="2"></textarea>
+        </mat-form-field>
+        <div class="form-actions">
+          <button mat-button (click)="cancelEdit()">Cancel</button>
+          <button mat-raised-button color="primary" (click)="updateRole()">Update</button>
+        </div>
+      </div>
+
+      <!-- Menu Permissions -->
+      <mat-expansion-panel class="permissions-section">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>menu</mat-icon>
+            Menu Permissions
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="permission-list">
+          <div class="permission-item" *ngFor="let menu of menus">
+            <div class="permission-info">
+              <mat-icon>{{ menu.icon || 'folder' }}</mat-icon>
+              <div>
+                <strong>{{ menu.name }}</strong>
+                <div class="hint" *ngIf="menu.description">{{ menu.description }}</div>
+              </div>
+            </div>
+            <div class="permission-controls">
+              <mat-checkbox 
+                [checked]="hasMenuPermission(menu.id)"
+                (change)="toggleMenuPermission(menu.id)">
+                Access
+              </mat-checkbox>
+              <mat-form-field appearance="outline" *ngIf="hasMenuPermission(menu.id)" class="permission-type">
+                <mat-label>Permission Type</mat-label>
+                <mat-select [value]="getMenuPermissionType(menu.id)" 
+                           (selectionChange)="updateMenuPermissionType(menu.id, $event.value)">
+                  <mat-option value="read">Read</mat-option>
+                  <mat-option value="write">Write</mat-option>
+                  <mat-option value="admin">Admin</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Catalogue Permissions -->
+      <mat-expansion-panel class="permissions-section">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>description</mat-icon>
+            Catalogue Permissions
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="permission-list" *ngFor="let menu of menus">
+          <h4 class="menu-group-header">
+            <mat-icon>{{ menu.icon || 'folder' }}</mat-icon>
+            {{ menu.name }}
+          </h4>
+          <div class="permission-item" *ngFor="let catalogue of getCataloguesForMenu(menu.id)">
+            <div class="permission-info">
+              <mat-icon>{{ catalogue.icon || 'description' }}</mat-icon>
+              <div>
+                <strong>{{ catalogue.name }}</strong>
+                <div class="hint" *ngIf="catalogue.description">{{ catalogue.description }}</div>
+              </div>
+            </div>
+            <div class="permission-controls">
+              <mat-checkbox 
+                [checked]="hasCataloguePermission(catalogue.id)"
+                (change)="toggleCataloguePermission(catalogue.id)">
+                Access
+              </mat-checkbox>
+              <mat-form-field appearance="outline" *ngIf="hasCataloguePermission(catalogue.id)" class="permission-type">
+                <mat-label>Permission Type</mat-label>
+                <mat-select [value]="getCataloguePermissionType(catalogue.id)" 
+                           (selectionChange)="updateCataloguePermissionType(catalogue.id, $event.value)">
+                  <mat-option value="read">Read</mat-option>
+                  <mat-option value="write">Write</mat-option>
+                  <mat-option value="admin">Admin</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!selectedRole && !loading">
+      <mat-icon>info</mat-icon>
+      <p>Select a role to manage its permissions</p>
+    </div>
+  </div>
+</div>

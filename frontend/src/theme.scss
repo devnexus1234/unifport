@@ -1,0 +1,260 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+// Override Material Design colors with custom palette
+:root,
+.light-theme {
+  // Primary color: #4A90E2 (Light blue)
+  --mdc-theme-primary: #4A90E2;
+  --mat-sys-primary: #4A90E2;
+  
+  // Accent color: #ECAE0E (Gold/yellow)
+  --mdc-theme-secondary: #ECAE0E;
+  --mat-sys-secondary: #ECAE0E;
+  
+  // Warn/Error color: #E31D25 (Red)
+  --mdc-theme-error: #E31D25;
+  --mat-sys-error: #E31D25;
+  
+  // Background: #FEFEFE (Off-white)
+  --mdc-theme-surface: #FEFEFE;
+  --mat-sys-surface: #FEFEFE;
+  --mdc-theme-background: #FEFEFE;
+  --mat-sys-background: #FEFEFE;
+  --mdc-theme-on-surface: #362D7E;
+  --mat-sys-on-surface: #362D7E;
+}
+
+// Dark theme Material overrides
+.dark-theme {
+  // Primary color: #4A90E2 (Light blue) - lighter for dark mode
+  --mdc-theme-primary: #6BA3E8;
+  --mat-sys-primary: #6BA3E8;
+  
+  // Accent color: #ECAE0E (Gold/yellow)
+  --mdc-theme-secondary: #ECAE0E;
+  --mat-sys-secondary: #ECAE0E;
+  
+  // Warn/Error color: #E31D25 (Red)
+  --mdc-theme-error: #FF5252;
+  --mat-sys-error: #FF5252;
+  
+  // Background: Dark theme background
+  --mdc-theme-surface: #1a1a2e;
+  --mat-sys-surface: #1a1a2e;
+  --mdc-theme-background: #1a1a2e;
+  --mat-sys-background: #1a1a2e;
+  --mdc-theme-on-surface: #FEFEFE;
+  --mat-sys-on-surface: #FEFEFE;
+}
+
+// Override Material button colors
+.mat-mdc-raised-button.mat-primary {
+  --mdc-filled-button-container-color: #362D7E;
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+.mat-mdc-raised-button.mat-accent {
+  --mdc-filled-button-container-color: #ECAE0E;
+  --mdc-filled-button-label-text-color: #000000;
+}
+
+.mat-mdc-raised-button.mat-warn {
+  --mdc-filled-button-container-color: #E31D25;
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+// Override toolbar colors
+.mat-toolbar.mat-primary {
+  background: #362D7E;
+  color: #ffffff;
+}
+
+.dark-theme .mat-toolbar.mat-primary {
+  background: #362D7E;
+  color: #ffffff;
+}
+
+// Override form field focus colors
+.mat-mdc-form-field.mat-focused .mat-mdc-text-field-wrapper {
+  .mat-mdc-form-field-outline {
+    color: #362D7E;
+  }
+}
+
+.dark-theme {
+  // Material component dark mode overrides
+  .mat-mdc-card {
+    background-color: var(--mdc-theme-surface) !important;
+    color: var(--mdc-theme-on-surface) !important;
+    
+    // Ensure all text in cards is white/light in dark mode
+    mat-card-title,
+    mat-card-subtitle,
+    mat-card-content,
+    mat-card-actions {
+      color: var(--mdc-theme-on-surface) !important;
+    }
+    
+    // All text elements inside cards
+    p, span, div, h1, h2, h3, h4, h5, h6 {
+      color: var(--mdc-theme-on-surface) !important;
+    }
+  }
+  
+  .mat-mdc-form-field {
+    .mat-mdc-text-field-wrapper {
+      background-color: var(--mdc-theme-surface) !important;
+    }
+    
+    .mat-mdc-form-field-input-control {
+      color: var(--mdc-theme-on-surface) !important;
+    }
+    
+    .mat-mdc-form-field-label {
+      color: var(--mdc-theme-on-surface) !important;
+    }
+    
+    .mat-mdc-form-field-hint {
+      color: var(--text-tertiary) !important;
+    }
+  }
+  
+  .mat-mdc-table {
+    background-color: var(--mdc-theme-surface) !important;
+    
+    .mat-mdc-header-cell {
+      background-color: var(--bg-tertiary) !important;
+      color: var(--mdc-theme-on-surface) !important;
+    }
+    
+    .mat-mdc-cell {
+      color: var(--mdc-theme-on-surface) !important;
+      border-bottom-color: var(--border-color) !important;
+    }
+    
+    .mat-mdc-row {
+      &:hover {
+        background-color: var(--bg-tertiary) !important;
+      }
+    }
+  }
+  
+  .mat-mdc-menu-panel {
+    background-color: var(--mdc-theme-surface) !important;
+    color: var(--mdc-theme-on-surface) !important;
+  }
+  
+  .mat-mdc-menu-item {
+    color: var(--mdc-theme-on-surface) !important;
+    
+    &:hover {
+      background-color: var(--bg-tertiary) !important;
+    }
+    
+    &.selected {
+      background-color: var(--bg-tertiary) !important;
+    }
+  }
+  
+  .mat-mdc-dialog-container {
+    background-color: var(--mdc-theme-surface) !important;
+    color: var(--mdc-theme-on-surface) !important;
+  }
+  
+  .mat-mdc-snack-bar-container {
+    background-color: var(--mdc-theme-surface) !important;
+    color: var(--mdc-theme-on-surface) !important;
+  }
+  
+  .mat-mdc-tab-group {
+    .mat-mdc-tab-header {
+      border-bottom-color: var(--border-color) !important;
+    }
+    
+    .mat-mdc-tab-label {
+      color: var(--text-secondary) !important;
+      
+      &.mdc-tab--active {
+        color: var(--primary-color) !important;
+      }
+    }
+    
+    .mat-mdc-tab-body-content {
+      color: var(--text-primary) !important;
+    }
+  }
+  
+  .mat-mdc-chip {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  .mat-mdc-divider {
+    border-top-color: var(--border-color) !important;
+  }
+  
+  .mat-mdc-expansion-panel {
+    background-color: var(--mdc-theme-surface) !important;
+    color: var(--mdc-theme-on-surface) !important;
+    
+    .mat-expansion-panel-header {
+      color: var(--text-primary) !important;
+    }
+  }
+  
+  .mat-mdc-progress-spinner {
+    circle {
+      stroke: var(--primary-color) !important;
+    }
+  }
+  
+  // List items
+  .mat-mdc-list-item {
+    color: var(--text-primary) !important;
+    
+    &:hover {
+      background-color: var(--bg-tertiary) !important;
+    }
+  }
+  
+  // Sidenav
+  .mat-drawer,
+  .mat-sidenav {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  // Tooltip
+  .mat-mdc-tooltip {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  // Checkbox
+  .mat-mdc-checkbox {
+    .mdc-checkbox {
+      .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+        background-color: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+      }
+    }
+  }
+  
+  // Select dropdown
+  .mat-mdc-select-panel {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  .mat-mdc-option {
+    color: var(--text-primary) !important;
+    
+    &:hover {
+      background-color: var(--bg-tertiary) !important;
+    }
+    
+    &.mdc-list-item--selected {
+      background-color: var(--bg-tertiary) !important;
+    }
+  }
+}

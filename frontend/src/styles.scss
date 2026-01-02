@@ -1,0 +1,384 @@
+@import 'theme.scss';
+
+// Custom Color Palette
+$primary-color: #362D7E; // Dark purple/blue
+$accent-color: #ECAE0E; // Gold/yellow
+$error-color: #E31D25; // Red
+$background-color: #FEFEFE; // Off-white
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+// Light theme (default) - Using custom color scheme
+:root,
+.light-theme {
+  --bg-primary: #{$background-color};
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f5f5f5;
+  --text-primary: #{$primary-color};
+  --text-secondary: #4a4a4a;
+  --text-tertiary: #666666;
+  --border-color: #e0e0e0;
+  --shadow: rgba(54, 45, 126, 0.1);
+  --accent-color: #{$accent-color};
+  --accent-hover: #d49d0c;
+  --primary-color: #{$primary-color};
+  --primary-hover: #2a2263;
+  --error-color: #{$error-color};
+  --error-hover: #c41a21;
+  --success-color: #4caf50;
+  --warning-color: #{$accent-color};
+}
+
+// Dark theme - Using custom color scheme
+.dark-theme {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #{$primary-color};
+  --bg-tertiary: #2a2263;
+  --text-primary: #{$background-color};
+  --text-secondary: #e0e0e0;
+  --text-tertiary: #b0b0b0;
+  --border-color: #3d3470;
+  --shadow: rgba(0, 0, 0, 0.4);
+  --accent-color: #{$accent-color};
+  --accent-hover: #f5c01a;
+  --primary-color: #{$primary-color};
+  --primary-hover: #4a3d9e;
+  --error-color: #{$error-color};
+  --error-hover: #ff3d47;
+  --success-color: #66bb6a;
+  --warning-color: #{$accent-color};
+  --success-bg: rgba(102, 187, 106, 0.2);
+  --warning-bg: rgba(236, 174, 14, 0.2);
+  --error-bg: rgba(255, 82, 82, 0.2);
+  --success-bg-light: rgba(102, 187, 106, 0.1);
+  --warning-bg-light: rgba(236, 174, 14, 0.1);
+  --error-bg-light: rgba(255, 82, 82, 0.1);
+  --gray-bg: rgba(158, 158, 158, 0.15);
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Ensure all elements inherit theme colors
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+// Global dark theme overrides
+.dark-theme {
+
+  // Ensure Material components use dark theme
+  .mat-mdc-card,
+  // .mat-mdc-form-field, // REMOVED: Outlined fields should be transparent
+  .mat-mdc-table,
+  .mat-mdc-menu-panel,
+  .mat-mdc-dialog-container,
+  .mat-mdc-dialog-surface,
+  .mdc-dialog__surface,
+  .mat-mdc-paginator,
+  .mat-mdc-paginator-container,
+  .mat-mdc-paginator-range-label,
+  .mat-mdc-paginator-page-size-label,
+  .mat-mdc-snack-bar-container {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    --mdc-dialog-container-color: var(--bg-secondary);
+  }
+
+  // Ensure form field text is readable but background is transparent for outlined
+  .mat-mdc-form-field {
+    background-color: transparent !important;
+
+    .mdc-text-field--outlined {
+      background-color: transparent !important;
+    }
+
+    // Label color
+    .mdc-floating-label,
+    .mat-mdc-select-value {
+      color: var(--text-primary) !important;
+    }
+
+    // Border color
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--border-color) !important;
+    }
+  }
+
+  // Ensure select arrows and values are correct color (and transparent bg)
+  .mat-mdc-select-value,
+  .mat-mdc-select-arrow {
+    background-color: transparent !important;
+    color: var(--text-primary) !important;
+  }
+
+  .mat-mdc-select-value-text {
+    color: var(--text-primary) !important;
+  }
+
+  // Fix dropdown panel background (the popup list)
+  .mat-mdc-select-panel {
+    background-color: var(--bg-secondary) !important;
+
+    .mat-mdc-option {
+      color: var(--text-primary) !important;
+
+      &:hover,
+      &.mat-mdc-option-active {
+        background-color: var(--bg-tertiary) !important;
+      }
+
+      &.mat-mdc-option-selected:not(.mat-mdc-option-multiple) {
+        background-color: var(--bg-tertiary) !important;
+      }
+    }
+  }
+
+  // Links
+  a:not(.mat-mdc-button):not(.mat-mdc-raised-button) {
+    color: var(--primary-color);
+
+    &:hover {
+      color: var(--primary-hover);
+    }
+  }
+
+  // Buttons (non-Material)
+  button:not(.mat-mdc-button):not(.mat-mdc-raised-button):not(.mat-mdc-icon-button):not(.mat-mdc-fab) {
+    background-color: var(--accent-color);
+    color: white;
+
+    &:hover {
+      background-color: var(--accent-hover);
+    }
+  }
+
+  // Inputs and selects (non-Material)
+  input:not([type="checkbox"]):not([type="radio"]):not(.mat-mdc-input-element),
+  select:not(.mat-mdc-select),
+  textarea:not(.mat-mdc-input-element) {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+
+    &::placeholder {
+      color: var(--text-tertiary);
+    }
+  }
+
+  // Code blocks
+  code,
+  pre {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
+  // Horizontal rules
+  hr {
+    border-color: var(--border-color);
+  }
+
+  // FORCE ALL TEXT TO WHITE IN DARK MODE
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  div,
+  label,
+  th,
+  td,
+  li,
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    color: #ffffff !important;
+  }
+
+  // Specific override for muted/secondary text to be slightly off-white instead of pure white if needed, 
+  // but user asked for "all text color to white", so sticking to that primarily.
+  // We can treat .text-muted or similar classes if they exist, but for now enforcing white.
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px var(--shadow);
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: var(--accent-hover);
+  }
+
+  &:disabled {
+    background-color: var(--text-tertiary);
+    cursor: not-allowed;
+  }
+}
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+  }
+
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  th {
+    background-color: var(--bg-tertiary);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  tr:hover {
+    background-color: var(--bg-tertiary);
+  }
+}
+
+// Override Material's default padding on sidenav content
+.mat-sidenav-content,
+.mat-drawer-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important; // Allow vertical scrolling
+  scrollbar-width: none !important; // Hide scrollbar
+  -ms-overflow-style: none !important; // Hide scrollbar
+
+  &::-webkit-scrollbar {
+    display: none !important; // Hide scrollbar
+    width: 0 !important;
+    height: 0 !important;
+  }
+}
+
+// Hide scrollbars on body and html to prevent any scrolling
+// Scrollbars restored
+html,
+body {
+  overflow-x: hidden;
+  // Scrollbar hiding removed
+}
+
+// Hide scrollbars on Material sidenav when collapsed
+.mat-sidenav.collapsed {
+  overflow: hidden !important;
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+
+  &::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  .mat-nav-list,
+  .mat-list-base,
+  .mat-list {
+    overflow: hidden !important;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+
+    &::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+  }
+}
+
+// Ensure ng-star-inserted elements don't add extra spacing
+.ng-star-inserted {
+
+  &.dashboard-container,
+  &.dashboard-view,
+  &.catalogues-panel {
+    margin: 0 !important;
+    padding-top: 0 !important;
+  }
+}

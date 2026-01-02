@@ -1,0 +1,9 @@
+# Example pip configuration for Nexus repository
+# Copy this to ~/.pip/pip.conf or use PIP_INDEX_URL environment variable in Docker
+
+[global]
+index-url = http://nexus.example.com:8081/repository/pypi-group/simple
+trusted-host = nexus.example.com
+
+# If authentication is required, use this format:
+# index-url = http://username:password@nexus.example.com:8081/repository/pypi-group/simple

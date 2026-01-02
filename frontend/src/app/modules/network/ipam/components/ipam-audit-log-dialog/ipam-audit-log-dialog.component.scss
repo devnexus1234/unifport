@@ -1,0 +1,30 @@
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.table-container {
+    max-height: 60vh;
+    overflow: auto;
+    min-width: 800px;
+    /* Ensure table is wide enough */
+}
+
+table {
+    width: 100%;
+}
+
+.changes-text {
+    white-space: normal;
+    word-wrap: break-word;
+    max-width: 400px;
+    display: block;
+    line-height: 1.4;
+    padding: 4px 0;
+}
+
+.hidden {
+    display: none;
+}

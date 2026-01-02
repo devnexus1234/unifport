@@ -1,0 +1,6 @@
+*.log
+*.key
+*.crt
+*.csr
+logs/
+*.prod

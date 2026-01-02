@@ -1,0 +1,28 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+.env
+.env.local
+.env.*.local
+.git
+.gitignore
+README.md
+# Keep deps/ folder for offline builds - don't ignore it
+# deps/
+tests/
+.vscode/
+.idea/
+*.swp
+*.swo

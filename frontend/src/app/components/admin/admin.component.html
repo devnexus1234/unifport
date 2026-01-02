@@ -1,0 +1,23 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <button mat-icon-button (click)="goBack()" class="back-button" matTooltip="Back to Dashboard">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Admin Panel</h1>
+  </div>
+
+  <mat-tab-group [(selectedIndex)]="activeTab">
+    <mat-tab label="Catalogues">
+      <app-catalogue-list></app-catalogue-list>
+    </mat-tab>
+    <mat-tab label="Roles & Permissions">
+      <app-role-management></app-role-management>
+    </mat-tab>
+    <mat-tab label="Categories">
+      <app-category-management></app-category-management>
+    </mat-tab>
+    <mat-tab label="Users">
+      <app-user-role-management></app-user-role-management>
+    </mat-tab>
+  </mat-tab-group>
+</div>

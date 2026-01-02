@@ -1,0 +1,218 @@
+<div class="dashboard-container">
+  <!-- Dashboard Summary View (Default) -->
+  <div class="dashboard-view" *ngIf="!showCatalogues">
+    <div class="panel-header">
+      <h2>
+        <mat-icon>dashboard</mat-icon>
+        Dashboard
+      </h2>
+      <p class="subtitle">Application Summary and Health Overview</p>
+    </div>
+
+    <!-- Summary Section -->
+    <div class="summary-section">
+      <h3 class="section-title">Application Summary</h3>
+      <mat-progress-spinner *ngIf="isLoadingSummary" mode="indeterminate" diameter="40"
+        class="loading-spinner"></mat-progress-spinner>
+
+      <div class="summary-grid" *ngIf="summary && !isLoadingSummary">
+        <mat-card class="summary-card users-card" [class.clickable]="isAdmin" (click)="navigateToAdmin('users')">
+          <mat-card-header>
+            <mat-card-title>Users</mat-card-title>
+            <div class="card-icon users-icon">
+              <mat-icon>people</mat-icon>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="stat-value">{{ summary.users.total }}</div>
+            <div class="stat-details">
+              <span class="stat-item active">{{ summary.users.active }} Active</span>
+              <span class="stat-item inactive">{{ summary.users.inactive }} Inactive</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="summary-card catalogues-card" [class.clickable]="isAdmin"
+          (click)="navigateToAdmin('catalogues')">
+          <mat-card-header>
+            <mat-card-title>Catalogues</mat-card-title>
+            <div class="card-icon catalogues-icon">
+              <mat-icon>folder</mat-icon>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="stat-value">{{ summary.catalogues.total }}</div>
+            <div class="stat-details">
+              <span class="stat-item enabled">{{ summary.catalogues.enabled }} Enabled</span>
+              <span class="stat-item disabled">{{ summary.catalogues.disabled }} Disabled</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="summary-card menus-card" [class.clickable]="isAdmin" (click)="navigateToAdmin('categories')">
+          <mat-card-header>
+            <mat-card-title>Categories</mat-card-title>
+            <div class="card-icon menus-icon">
+              <mat-icon>category</mat-icon>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="stat-value">{{ summary.categories.total }}</div>
+            <div class="stat-details">
+              <span class="stat-item active">{{ summary.categories.active }} Active</span>
+              <span class="stat-item inactive">{{ summary.categories.inactive }} Inactive</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="summary-card roles-card" [class.clickable]="isAdmin" (click)="navigateToAdmin('roles')">
+          <mat-card-header>
+            <mat-card-title>Roles</mat-card-title>
+            <div class="card-icon roles-icon">
+              <mat-icon>admin_panel_settings</mat-icon>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="stat-value">{{ summary.roles.total }}</div>
+            <div class="stat-details">
+              <span class="stat-item active">{{ summary.roles.active }} Active</span>
+              <span class="stat-item assignments">{{ summary.roles.assignments }} Assignments</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Health Section -->
+    <div class="health-section">
+      <h3 class="section-title">System Health</h3>
+      <mat-progress-spinner *ngIf="isLoadingHealth" mode="indeterminate" diameter="40"
+        class="loading-spinner"></mat-progress-spinner>
+
+      <div class="health-grid" *ngIf="health && !isLoadingHealth">
+        <mat-card class="health-card" [class.healthy]="health.overall === 'healthy'"
+          [class.degraded]="health.overall === 'degraded'" [class.unhealthy]="health.overall === 'unhealthy'">
+          <mat-card-header>
+            <div class="health-status-icon">
+              <mat-icon *ngIf="health.overall === 'healthy'">check_circle</mat-icon>
+              <mat-icon *ngIf="health.overall === 'degraded'">warning</mat-icon>
+              <mat-icon *ngIf="health.overall === 'unhealthy'">error</mat-icon>
+            </div>
+            <mat-card-title>Overall Status</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="health-status-value">{{ health.overall | titlecase }}</div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="health-card" *ngIf="health.components.database"
+          [class.healthy]="health.components.database.status === 'healthy'"
+          [class.degraded]="health.components.database.status === 'degraded'"
+          [class.unhealthy]="health.components.database.status === 'unhealthy'">
+          <mat-card-header>
+            <div class="health-status-icon">
+              <mat-icon *ngIf="health.components.database.status === 'healthy'">check_circle</mat-icon>
+              <mat-icon *ngIf="health.components.database.status === 'degraded'">warning</mat-icon>
+              <mat-icon *ngIf="health.components.database.status === 'unhealthy'">error</mat-icon>
+            </div>
+            <mat-card-title>Database</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="health-status-value">{{ health.components.database.status | titlecase }}</div>
+            <div class="health-details" *ngIf="health.components.database.response_time_ms">
+              Response: {{ health.components.database.response_time_ms }}ms
+            </div>
+            <div class="health-error" *ngIf="health.components.database.error">
+              {{ health.components.database.error }}
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="health-card" *ngIf="health.components.api"
+          [class.healthy]="health.components.api.status === 'healthy'"
+          [class.degraded]="health.components.api.status === 'degraded'">
+          <mat-card-header>
+            <div class="health-status-icon">
+              <mat-icon *ngIf="health.components.api.status === 'healthy'">check_circle</mat-icon>
+              <mat-icon *ngIf="health.components.api.status === 'degraded'">warning</mat-icon>
+            </div>
+            <mat-card-title>API</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="health-status-value">{{ health.components.api.status | titlecase }}</div>
+            <div class="health-details" *ngIf="health.components.api.response_time_ms">
+              Response: {{ health.components.api.response_time_ms }}ms
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="health-card" *ngIf="health.components.system && !health.components.system.error"
+          [class.healthy]="health.components.system.status === 'healthy'"
+          [class.degraded]="health.components.system.status === 'degraded'">
+          <mat-card-header>
+            <div class="health-status-icon">
+              <mat-icon *ngIf="health.components.system.status === 'healthy'">check_circle</mat-icon>
+              <mat-icon *ngIf="health.components.system.status === 'degraded'">warning</mat-icon>
+            </div>
+            <mat-card-title>System</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="health-status-value">{{ health.components.system.status | titlecase }}</div>
+            <div class="health-details" *ngIf="health.components.system && health.components.system.cpu">
+              CPU: {{ health.components.system.cpu.usage_percent }}% | Memory: {{
+              health.components.system.memory?.usage_percent }}%
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Catalogues View (When Category Selected) -->
+  <div class="catalogues-panel" *ngIf="showCatalogues">
+    <div class="panel-header" *ngIf="selectedMenu">
+      <div class="header-content">
+        <button mat-icon-button (click)="goBackToDashboard()" class="back-button" matTooltip="Back to Dashboard">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="header-text">
+          <h2>
+            <mat-icon>{{ selectedMenu.icon || 'folder' }}</mat-icon>
+            {{ selectedMenu.name }}
+          </h2>
+          <p class="menu-description" *ngIf="selectedMenu.description">{{ selectedMenu.description }}</p>
+        </div>
+      </div>
+    </div>
+
+    <mat-progress-spinner *ngIf="isLoading" mode="indeterminate" diameter="50"
+      class="loading-spinner"></mat-progress-spinner>
+
+    <div class="catalogues-grid" *ngIf="selectedMenu && catalogues.length > 0 && !isLoading">
+      <div *ngFor="let catalogue of catalogues" (click)="navigateToCatalogue(catalogue)" class="catalogue-card-link">
+        <mat-card class="catalogue-card">
+          <mat-card-header>
+            <mat-card-title>{{ catalogue.name }}</mat-card-title>
+            <div class="catalogue-icon">
+              <mat-icon>{{ catalogue.icon || 'description' }}</mat-icon>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="catalogue-description">{{ catalogue.description || 'No description available' }}</p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-button color="primary" (click)="navigateToCatalogue(catalogue); $event.stopPropagation()">
+              Open
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+
+    <div *ngIf="selectedMenu && catalogues.length === 0 && !isLoading" class="empty-state">
+      <mat-icon>inbox</mat-icon>
+      <p>No catalogues available in this category</p>
+    </div>
+  </div>
+</div>

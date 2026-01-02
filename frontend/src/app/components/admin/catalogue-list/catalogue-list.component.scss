@@ -1,0 +1,148 @@
+.catalogue-list-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+
+  .header-actions {
+    margin: 0;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    background: var(--bg-primary, white);
+    z-index: 10;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    
+    button {
+      mat-icon {
+        margin-right: 8px;
+      }
+    }
+  }
+  
+  .table-wrapper {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: auto; // Allow wrapper to scroll
+    padding: 0;
+    margin: 0;
+  }
+
+  mat-progress-spinner {
+    flex-shrink: 0;
+    margin: 40px auto;
+  }
+
+  .catalogue-table {
+    width: 100%;
+    background: var(--bg-primary);
+    margin: 0;
+    padding: 0;
+    border-spacing: 0;
+    border-collapse: collapse;
+    // Removed flex: 1 and overflow from table itself
+    
+    // Reduce row spacing - make rows compact and continuous
+    ::ng-deep {
+      table {
+        border-collapse: collapse !important;
+        border-spacing: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      
+      .mat-mdc-header-cell,
+      .mat-mdc-cell {
+        padding: 8px 16px !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
+        margin: 0 !important;
+      }
+      
+      .mat-mdc-row {
+        min-height: 40px !important;
+        height: 40px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-spacing: 0 !important;
+      }
+      
+      .mat-mdc-header-row {
+        min-height: 40px !important;
+        height: 40px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-spacing: 0 !important;
+      }
+      
+      // Remove any gaps between rows
+      tbody {
+        tr {
+          border-spacing: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          
+          &:not(:last-child) {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+          }
+        }
+      }
+      
+      thead {
+        tr {
+          border-spacing: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+      }
+    }
+    
+    .name-cell,
+    .menu-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      
+      mat-icon {
+        color: var(--primary-color);
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+    }
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 64px;
+    color: var(--text-tertiary);
+    
+    mat-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+    }
+  }
+  
+  .enabled {
+    color: var(--success-color);
+    font-weight: 500;
+  }
+  
+  .disabled {
+    color: var(--error-color);
+    font-weight: 500;
+  }
+}
+

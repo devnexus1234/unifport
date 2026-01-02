@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>{{ data.title || 'Add Comment' }}</h2>
+<mat-dialog-content>
+    <p *ngIf="data.message">{{ data.message }}</p>
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Comment</mat-label>
+        <textarea matInput [(ngModel)]="comment" rows="4" [required]="!!data.required"></textarea>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]="undefined">Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="comment"
+        [disabled]="data.required && !comment">Confirm</button>
+</mat-dialog-actions>

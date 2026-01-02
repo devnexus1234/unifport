@@ -1,0 +1,120 @@
+<div class="catalogue-welcome-container" *ngIf="!isRedirecting">
+  <div class="page-header">
+    <button mat-icon-button (click)="goBack()" class="back-button" matTooltip="Back to Dashboard">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
+
+  <mat-progress-spinner 
+    *ngIf="isLoading" 
+    mode="indeterminate" 
+    diameter="50" 
+    class="loading-spinner">
+  </mat-progress-spinner>
+
+  <div *ngIf="error && !isLoading" class="error-container">
+    <mat-card class="error-card">
+      <mat-card-content>
+        <mat-icon class="error-icon">error_outline</mat-icon>
+        <h2>Catalogue Not Found</h2>
+        <p>{{ error }}</p>
+        <button mat-raised-button color="primary" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Back to Dashboard
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="catalogue && !isLoading" class="welcome-content">
+    <mat-card class="welcome-card">
+      <mat-card-header>
+        <div class="header-content">
+          <div class="icon-container">
+            <mat-icon class="catalogue-icon">{{ catalogue.icon || 'description' }}</mat-icon>
+          </div>
+          <div class="title-section">
+            <mat-card-title>{{ catalogue.name }}</mat-card-title>
+            <mat-card-subtitle *ngIf="catalogue.menu">
+              <mat-icon>{{ catalogue.menu.icon || 'folder' }}</mat-icon>
+              {{ catalogue.menu.name }}
+            </mat-card-subtitle>
+          </div>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="description-section">
+          <p *ngIf="catalogue.description" class="description">
+            {{ catalogue.description }}
+          </p>
+          <p *ngIf="!catalogue.description" class="description placeholder">
+            Welcome to {{ catalogue.name }}. This catalogue is ready for further development.
+          </p>
+        </div>
+
+        <div class="info-section">
+          <div class="info-item" *ngIf="catalogue.api_endpoint">
+            <mat-icon>api</mat-icon>
+            <div>
+              <strong>API Endpoint:</strong>
+              <span>{{ catalogue.api_endpoint }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon>route</mat-icon>
+            <div>
+              <strong>Route:</strong>
+              <span>{{ catalogue.frontend_route || 'N/A' }}</span>
+            </div>
+          </div>
+          <div class="info-item" *ngIf="catalogue.category">
+            <mat-icon>category</mat-icon>
+            <div>
+              <strong>Category:</strong>
+              <span>{{ catalogue.category.name }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-section">
+          <mat-icon [class.enabled]="catalogue.is_enabled" [class.disabled]="!catalogue.is_enabled">
+            {{ catalogue.is_enabled ? 'check_circle' : 'cancel' }}
+          </mat-icon>
+          <span [class.enabled]="catalogue.is_enabled" [class.disabled]="!catalogue.is_enabled">
+            {{ catalogue.is_enabled ? 'Enabled' : 'Disabled' }}
+          </span>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Back to Dashboard
+        </button>
+        <button mat-stroked-button *ngIf="catalogue.api_endpoint">
+          <mat-icon>api</mat-icon>
+          View API
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="development-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>code</mat-icon>
+          Development Status
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>This is a basic welcome page for the catalogue. You can develop this catalogue further by:</p>
+        <ul>
+          <li>Adding custom components and features</li>
+          <li>Integrating with the API endpoint</li>
+          <li>Creating specific views and functionality</li>
+          <li>Adding data visualization or forms</li>
+        </ul>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

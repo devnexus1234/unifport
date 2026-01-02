@@ -1,0 +1,448 @@
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+// Main Toolbar
+.main-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  animation: fadeInDown 0.4s ease-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  margin: 0;
+  padding: 0 16px;
+  height: 64px;
+  min-height: 64px;
+  max-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #1e40af !important; // Professional Blue
+  color: white;
+
+  .app-branding {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-right: 24px;
+
+    .company-logo {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+
+    .app-title {
+      font-size: 20px;
+      font-weight: 500;
+      transition: transform 0.3s ease;
+      white-space: nowrap;
+      margin: 0;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  // Navigation Buttons Container
+  .nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    margin-left: 24px;
+
+    .nav-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 4px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+      text-transform: none;
+      min-width: auto;
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        transition: transform 0.3s ease;
+      }
+
+      .dropdown-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        margin-left: -4px;
+        transition: transform 0.3s ease;
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+
+        mat-icon {
+          transform: scale(1.1);
+        }
+      }
+
+      &.active,
+      &.dashboard-active {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+
+        mat-icon {
+          color: white;
+        }
+      }
+
+      &.categories-button {
+        &.active {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  // Shared Capsule Styles
+  .debug-chip,
+  .admin-capsule {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 12px;
+    margin-left: 12px;
+    padding: 0 12px;
+    height: 28px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-radius: 14px;
+    cursor: default;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+  }
+
+  // Debug Mode Chip specific
+  .debug-chip {
+    background-color: rgba(255, 152, 0, 0.15);
+    border: 1px solid rgba(255, 152, 0, 0.5);
+    color: #ff9800;
+
+    .debug-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+    }
+
+    &:hover {
+      background-color: rgba(255, 152, 0, 0.25);
+    }
+  }
+
+  // Admin Capsule specific
+  .admin-capsule {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+
+    .admin-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      color: #ffd700; // Gold icon
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  // User Actions
+  .user-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 16px;
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      font-size: 14px;
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+
+      .user-name {
+        white-space: nowrap;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        transform: scale(1.05);
+      }
+    }
+
+    .action-button {
+      color: rgba(255, 255, 255, 0.9);
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        transform: scale(1.1);
+
+        mat-icon {
+          transform: rotate(360deg);
+        }
+      }
+
+      mat-icon {
+        transition: transform 0.3s ease;
+      }
+    }
+  }
+}
+
+// Header Separator
+.header-separator {
+  display: flex;
+  width: 100%;
+  height: 4px;
+  position: relative; // Changed from sticky to relative
+  z-index: 900; // Lower z-index to stay behind dropdown menus (usually 1000+)
+
+  .sep-block {
+    height: 100%;
+  }
+
+  .blue {
+    background-color: #4a3d9e;
+    flex: 1;
+  }
+
+  .red {
+    background-color: #f44336;
+    flex: 2;
+  }
+
+  .orange {
+    background-color: #ff9800;
+    flex: 3;
+  }
+
+  .yellow {
+    background-color: #ffeb3b;
+    flex: 4;
+  }
+}
+
+// Categories Dropdown Menu
+.categories-menu {
+  margin-top: 8px;
+
+  .mat-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    transition: all 0.2s ease;
+
+    mat-icon {
+      color: var(--primary-color);
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      background-color: rgba(54, 45, 126, 0.1);
+    }
+
+    &.selected {
+      background-color: rgba(54, 45, 126, 0.15);
+      font-weight: 600;
+      color: var(--primary-color);
+
+      mat-icon {
+        color: var(--primary-color);
+      }
+    }
+  }
+}
+
+// Main Content
+.main-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: calc(100vh - 68px); // Adjusted for 64px header + 4px separator
+  height: calc(100vh - 68px); // Adjusted for 64px header + 4px separator
+  max-height: calc(100vh - 68px); // Adjusted for 64px header + 4px separator
+  transition: background-color 0.3s ease, color 0.3s ease;
+  animation: fadeIn 0.5s ease-out;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  position: relative;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+
+  // Ensure router-outlet doesn't add extra space
+  // Hide router-outlet as it's just a placeholder
+  router-outlet {
+    display: none;
+  }
+
+  // Ensure routed component fills the space
+  > :not(router-outlet) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .main-toolbar {
+    padding: 0 8px;
+
+    .app-branding {
+      margin-right: 8px;
+
+      .company-logo {
+        height: 32px;
+      }
+
+      .app-title {
+        font-size: 16px;
+      }
+    }
+
+    .nav-buttons {
+      margin-left: 8px;
+      gap: 4px;
+
+      .nav-button {
+        padding: 8px 12px;
+        font-size: 14px;
+
+        span {
+          display: none; // Hide text on mobile, show only icons
+        }
+
+        mat-icon {
+          margin: 0;
+        }
+
+        .dropdown-icon {
+          display: none;
+        }
+      }
+    }
+
+    .debug-chip {
+      margin-right: 8px;
+      margin-left: 8px;
+      font-size: 10px;
+      padding: 3px 8px;
+
+      span {
+        display: none; // Hide text on mobile, show only icon
+      }
+    }
+
+    .user-actions {
+      margin-left: 8px;
+      gap: 4px;
+
+      .user-info {
+        padding: 4px 8px;
+
+        .user-name {
+          display: none; // Hide username on mobile
+        }
+      }
+    }
+  }
+
+  .categories-menu {
+    .mat-menu-item {
+      span {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .main-toolbar {
+    .nav-buttons {
+      .nav-button {
+        padding: 8px;
+        min-width: 40px;
+      }
+    }
+  }
+}

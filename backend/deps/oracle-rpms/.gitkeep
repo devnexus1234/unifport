@@ -1,0 +1,6 @@
+# This directory should contain Oracle Instant Client RPMs:
+# - oracle-instantclient-release-el8-1.0-1.x86_64.rpm
+# - oracle-instantclient-basic-*.x86_64.rpm
+#
+# Download from: https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html
+# Run: ./scripts/download-oracle-rpms.sh for instructions

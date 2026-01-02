@@ -1,0 +1,5 @@
+# This directory should contain Debian packages for python:3.11-slim base image
+# Required packages:
+# - gcc, g++, libldap2-dev, libsasl2-dev, libaio-dev, libaio1
+#
+# Run: ./scripts/download-debian-packages.sh to download all packages

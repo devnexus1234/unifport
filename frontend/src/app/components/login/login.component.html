@@ -1,0 +1,73 @@
+<!-- Header Bar -->
+<header class="login-header">
+  <div class="header-content">
+    <div class="header-logo-container">
+      <div class="header-logo-icon">
+        <img src="assets/images/company-logo.png" alt="Company Logo" style="height: 32px; width: auto;">
+      </div>
+    </div>
+    <div class="header-title-container">
+      <span class="header-portal-name">Unified Management Portal</span>
+    </div>
+  </div>
+</header>
+
+<div class="login-container">
+  <!-- Left Panel: Branding/Automation Image -->
+  <div class="login-left-panel login-image-panel">
+    <div class="branding-image-container">
+      <img src="assets/images/login-automation.png" alt="Automation Illustration" class="branding-image">
+    </div>
+  </div>
+
+  <!-- Right Panel: Login Form -->
+  <div class="login-right-panel login-form-panel">
+    <div class="login-content">
+      <!-- Logo and Login Text in Single Line -->
+      <div class="logo-container">
+        <div class="logo-icon">
+          <img src="assets/images/company-logo.png" alt="Company Logo" style="height: 48px; width: auto;">
+        </div>
+        <span class="login-text">Login to Unified Management Portal</span>
+      </div>
+
+      <!-- Description Text -->
+      <p class="description-text">
+        Login to access your dashboard and continue optimizing your automation processes.
+      </p>
+
+      <!-- Login Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" type="text" placeholder="Enter your username" required>
+          <mat-icon matPrefix class="input-icon">person</mat-icon>
+          <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
+            Username is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
+            placeholder="Enter your password" required>
+          <mat-icon matPrefix class="input-icon">lock</mat-icon>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button"
+            [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button type="submit" class="full-width sign-in-button"
+          [disabled]="loginForm.invalid || isLoading" [class.loading]="isLoading">
+          <mat-progress-spinner *ngIf="isLoading" diameter="20" mode="indeterminate" class="button-spinner">
+          </mat-progress-spinner>
+          <span class="button-text" [class.hidden]="isLoading">log in</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

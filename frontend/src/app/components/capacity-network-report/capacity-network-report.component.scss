@@ -1,0 +1,409 @@
+.capacity-report-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 20px auto;
+  font-family: 'Roboto', sans-serif;
+}
+
+.header-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+
+  .back-arrow {
+    cursor: pointer;
+    margin-right: 15px;
+    color: #673ab7;
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .title-group {
+    display: flex;
+    align-items: center;
+  }
+
+  .catalogue-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: #673ab7;
+    margin-right: 15px;
+  }
+
+  .text-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .catalogue-title {
+    font-size: 2.2em;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+  }
+
+  .catalogue-subtitle {
+    font-size: 1em;
+    color: #777;
+    margin: 0;
+  }
+}
+
+.controls-card {
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.controls-content {
+  padding: 0 !important;
+}
+
+.controls-row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .region-selector {
+    min-width: 200px;
+  }
+
+  .hours-toggle-group {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+
+    mat-button-toggle {
+      background-color: white;
+      color: #333;
+      font-weight: 500;
+
+      &.mat-button-toggle-checked {
+        background-color: #3f51b5; // Primary blue
+        color: white;
+      }
+    }
+  }
+}
+
+.dashboard-card,
+.upload-card {
+  margin-bottom: 30px;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-card {
+  .mat-mdc-card-header {
+    padding: 0 0 20px 0;
+  }
+
+  .mat-mdc-card-title {
+    font-size: 1.6em;
+    font-weight: 600;
+    color: #673ab7;
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+// Global Table Styles for this component to match image
+.zone-summary-table,
+.device-details-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    background-color: #0d47a1; // Dark Blue header
+    color: white;
+    font-weight: 500;
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+  }
+
+  td {
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    font-size: 13px;
+    color: #333;
+  }
+}
+
+.zone-name-link {
+  cursor: pointer;
+  color: #1565c0; // Darker blue to match theme
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  .expand-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// Expanded Row Styles
+tr.detail-row {
+  height: 0;
+}
+
+tr.element-row:not(.expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.element-row:not(.expanded-row):active {
+  background: #efefef;
+}
+
+.element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.device-details-wrapper {
+  padding: 16px;
+  background-color: #f9f9f9;
+  width: 100%;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.device-details-title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.1em;
+  color: #555;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 8px;
+}
+
+.inner-table-container {
+  margin-top: 0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  background: white;
+}
+
+// Color-coded cells
+.cell-normal {
+  background-color: #c8e6c9 !important; // Light green
+  font-weight: 500;
+}
+
+.cell-warning {
+  background-color: #fff9c4 !important; // Light yellow
+  font-weight: 500;
+}
+
+.cell-critical {
+  background-color: #ffcdd2 !important; // Light red
+  font-weight: 500;
+}
+
+.device-details-container {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.device-details-title {
+  font-size: 1.3em;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.no-devices {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 20px;
+
+  p {
+    color: #666;
+    font-size: 1.1em;
+  }
+}
+
+// Device/Zone Management styles
+.management-card {
+  margin-bottom: 30px;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  .mat-mdc-card-header {
+    padding: 0 0 20px 0;
+  }
+
+  .mat-mdc-card-title {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #673ab7;
+  }
+}
+
+.management-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+
+  .modify-button {
+    padding: 10px 30px;
+    font-size: 1em;
+    font-weight: 500;
+    border-radius: 8px;
+    min-width: 150px;
+  }
+}
+
+.management-form {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.full-width-input {
+  width: 100%;
+}
+
+// Upload form styles
+.upload-card {
+  .mat-mdc-card-header {
+    padding: 0 0 20px 0;
+  }
+
+  .mat-mdc-card-title {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #673ab7;
+  }
+}
+
+.capacity-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.date-input {
+  flex: 1;
+  min-width: 250px;
+}
+
+.file-upload-row {
+  align-items: center;
+}
+
+.file-input-group {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 280px;
+
+  .file-label {
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+  }
+
+  .file-name {
+    flex-grow: 1;
+    color: #777;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.submit-button {
+  align-self: flex-start;
+  padding: 10px 25px;
+  font-size: 1.1em;
+  font-weight: 500;
+  border-radius: 8px;
+  min-width: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  mat-spinner {
+    margin-right: 8px;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .date-input,
+  .file-input-group {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .submit-button {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .controls-row {
+    flex-direction: column;
+    align-items: stretch;
+
+    .region-selector {
+      width: 100%;
+    }
+
+    .hours-toggle {
+      width: 100%;
+    }
+  }
+
+  .table-container {
+    overflow-x: scroll;
+  }
+}

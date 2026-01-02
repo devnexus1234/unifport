@@ -1,0 +1,101 @@
+<div class="catalogue-list-container">
+  <div class="header-actions">
+    <button mat-raised-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      Add New Catalogue
+    </button>
+  </div>
+
+  <div class="table-wrapper">
+    <mat-progress-spinner *ngIf="isLoading" mode="indeterminate" diameter="50"></mat-progress-spinner>
+
+    <table mat-table [dataSource]="catalogues" class="catalogue-table" *ngIf="!isLoading">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let catalogue">
+        <div class="name-cell">
+          <mat-icon>{{ catalogue.icon || 'description' }}</mat-icon>
+          {{ catalogue.name }}
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="menu">
+      <th mat-header-cell *matHeaderCellDef>Menu</th>
+      <td mat-cell *matCellDef="let catalogue">
+        <div class="menu-cell" *ngIf="catalogue.menu">
+          <mat-icon>{{ catalogue.menu.icon || 'folder' }}</mat-icon>
+          {{ catalogue.menu.name }}
+        </div>
+        <span *ngIf="!catalogue.menu">N/A</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="enabled">
+      <th mat-header-cell *matHeaderCellDef>Enabled</th>
+      <td mat-cell *matCellDef="let catalogue">
+        <span [class.enabled]="catalogue.is_enabled" [class.disabled]="!catalogue.is_enabled">
+          {{ catalogue.is_enabled ? 'Yes' : 'No' }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="route">
+      <th mat-header-cell *matHeaderCellDef>Route</th>
+      <td mat-cell *matCellDef="let catalogue">
+        {{ catalogue.frontend_route || 'N/A' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="reorder">
+      <th mat-header-cell *matHeaderCellDef>Reorder</th>
+      <td mat-cell *matCellDef="let catalogue; let i = index">
+        <button 
+          mat-icon-button 
+          (click)="moveUp(catalogue)" 
+          [disabled]="i === 0"
+          matTooltip="Move Up"
+          [style.opacity]="i === 0 ? '0.3' : '1'">
+          <mat-icon>arrow_upward</mat-icon>
+        </button>
+        <button 
+          mat-icon-button 
+          (click)="moveDown(catalogue)" 
+          [disabled]="i === catalogues.length - 1"
+          matTooltip="Move Down"
+          [style.opacity]="i === catalogues.length - 1 ? '0.3' : '1'">
+          <mat-icon>arrow_downward</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let catalogue">
+        <button mat-icon-button (click)="openEditDialog(catalogue)" matTooltip="Edit">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button 
+          mat-icon-button 
+          (click)="toggleEnabled(catalogue)" 
+          [matTooltip]="catalogue.is_enabled ? 'Disable' : 'Enable'"
+        >
+          <mat-icon>{{ catalogue.is_enabled ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+        </button>
+        <button mat-icon-button (click)="deleteCatalogue(catalogue)" matTooltip="Delete" color="warn">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <div *ngIf="!isLoading && catalogues.length === 0" class="empty-state">
+      <mat-icon>inbox</mat-icon>
+      <p>No catalogues found. Create one to get started.</p>
+    </div>
+  </div>
+</div>
+

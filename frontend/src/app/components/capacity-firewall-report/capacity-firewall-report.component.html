@@ -1,0 +1,409 @@
+<div class="capacity-report-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <mat-icon class="back-arrow" routerLink="/dashboard">arrow_back</mat-icon>
+    <div class="title-group">
+      <mat-icon class="catalogue-icon">router</mat-icon>
+      <div class="text-group">
+        <h1 class="catalogue-title">Capacity Dashboard</h1>
+        <p class="catalogue-subtitle">Firewall automation</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Form Section -->
+  <mat-card class="upload-card">
+    <mat-card-header>
+      <mat-card-title>Upload Capacity Data</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="submit()" class="capacity-form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="date-input">
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="startDatePicker" formControlName="start_date" placeholder="dd-mm-yyyy">
+            <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #startDatePicker></mat-datepicker>
+            <mat-error *ngIf="form.get('start_date')?.hasError('required')">Start Date is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="date-input">
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="endDatePicker" formControlName="end_date" placeholder="dd-mm-yyyy">
+            <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #endDatePicker></mat-datepicker>
+            <mat-error *ngIf="form.get('end_date')?.hasError('required')">End Date is required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row file-upload-row">
+          <div class="file-input-group">
+            <label class="file-label">Raw Data File:</label>
+            <input type="file" (change)="onFileChange($event, 'raw_data_file')" #rawFileInput hidden>
+            <button mat-stroked-button type="button" (click)="rawFileInput.click()">Choose File</button>
+            <span class="file-name">{{ form.get('raw_data_file')?.value?.name || 'No file chosen' }}</span>
+            <mat-error *ngIf="form.get('raw_data_file')?.hasError('required') && form.get('raw_data_file')?.touched">File is required</mat-error>
+          </div>
+
+          <div class="file-input-group">
+            <label class="file-label">Connection Count File:</label>
+            <input type="file" (change)="onFileChange($event, 'connection_count_file')" #connCountFileInput hidden>
+            <button mat-stroked-button type="button" (click)="connCountFileInput.click()">Choose File</button>
+            <span class="file-name">{{ form.get('connection_count_file')?.value?.name || 'No file chosen' }}</span>
+            <mat-error *ngIf="form.get('connection_count_file')?.hasError('required') && form.get('connection_count_file')?.touched">File is required</mat-error>
+          </div>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading || downloading" class="submit-button">
+          <mat-spinner *ngIf="loading || downloading" diameter="20"></mat-spinner>
+          {{ loading ? 'Uploading...' : (downloading ? 'Downloading...' : 'Download Files and Generate Dashboard') }}
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Dashboard Controls -->
+  <mat-card class="controls-card">
+    <mat-card-content class="controls-content">
+      <div class="controls-row">
+        <mat-form-field appearance="outline" class="region-selector">
+          <mat-label>Select Region</mat-label>
+          <mat-select [(ngModel)]="selectedRegion" (selectionChange)="onRegionChange()">
+            <mat-option *ngFor="let region of regions" [value]="region">
+              {{ region }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-button-toggle-group
+          [(ngModel)]="productionHours"
+          (change)="onProductionHoursChange()"
+          appearance="legacy"
+          name="productionHours"
+          class="hours-toggle-group"
+        >
+          <mat-button-toggle [value]="true">Production Hours</mat-button-toggle>
+          <mat-button-toggle [value]="false">Non-Production Hours</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Capacity Summary Report -->
+  <mat-card class="dashboard-card" *ngIf="!loadingDashboard">
+    <mat-card-header>
+      <mat-card-title>Capacity Summary Report - {{ productionHours ? 'Production Hours' : 'Non-Production Hours' }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Zone Summary Table -->
+      <div class="table-container">
+        <table mat-table [dataSource]="zones" multiTemplateDataRows class="zone-summary-table">
+          <!-- Zone Name Column -->
+          <ng-container matColumnDef="zone_name">
+            <th mat-header-cell *matHeaderCellDef>Zone Name</th>
+            <td mat-cell *matCellDef="let zone">
+              <span class="zone-name-link" (click)="toggleZone(zone.zone_name); $event.stopPropagation()">
+                {{ zone.zone_name }}
+                <mat-icon class="expand-icon">
+                  {{ isZoneExpanded(zone.zone_name) ? 'expand_less' : 'expand_more' }}
+                </mat-icon>
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Total Device Count Column -->
+          <ng-container matColumnDef="total_device_count">
+            <th mat-header-cell *matHeaderCellDef>Total Device Count</th>
+            <td mat-cell *matCellDef="let zone">{{ zone.total_device_count }}</td>
+          </ng-container>
+
+          <!-- CPU Normal Column -->
+          <ng-container matColumnDef="cpu_normal">
+            <th mat-header-cell *matHeaderCellDef>CPU (Normal 0-60%)</th>
+            <td mat-cell *matCellDef="let zone" class="cell-normal">
+              {{ zone.cpu_normal }}
+            </td>
+          </ng-container>
+
+          <!-- Memory Normal Column -->
+          <ng-container matColumnDef="memory_normal">
+            <th mat-header-cell *matHeaderCellDef>Memory (Normal 0-60%)</th>
+            <td mat-cell *matCellDef="let zone" class="cell-normal">
+              {{ zone.memory_normal }}
+            </td>
+          </ng-container>
+
+          <!-- CPU Warning Column -->
+          <ng-container matColumnDef="cpu_warning">
+            <th mat-header-cell *matHeaderCellDef>CPU (Warning 61-70%)</th>
+            <td mat-cell *matCellDef="let zone" class="cell-warning">
+              {{ zone.cpu_warning }}
+            </td>
+          </ng-container>
+
+          <!-- Memory Warning Column -->
+          <ng-container matColumnDef="memory_warning">
+            <th mat-header-cell *matHeaderCellDef>Memory (Warning 61-70%)</th>
+            <td mat-cell *matCellDef="let zone" class="cell-warning">
+              {{ zone.memory_warning }}
+            </td>
+          </ng-container>
+
+          <!-- CPU Critical Column -->
+          <ng-container matColumnDef="cpu_critical">
+            <th mat-header-cell *matHeaderCellDef>CPU (Critical 71% and above)</th>
+            <td mat-cell *matCellDef="let zone" class="cell-critical">
+              {{ zone.cpu_critical }}
+            </td>
+          </ng-container>
+
+          <!-- Memory Critical Column -->
+          <ng-container matColumnDef="memory_critical">
+            <th mat-header-cell *matHeaderCellDef>Memory (Critical 71% and above)</th>
+            <td mat-cell *matCellDef="let zone" class="cell-critical">
+              {{ zone.memory_critical }}
+            </td>
+          </ng-container>
+
+          <!-- Expanded Detail Row Definition -->
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let zone" [attr.colspan]="zoneSummaryColumns.length">
+              <div class="example-element-detail"
+                   [@detailExpand]="isZoneExpanded(zone.zone_name) ? 'expanded' : 'collapsed'">
+                <div class="device-details-wrapper">
+                  <h3 class="device-details-title">Device Details: {{ zone.zone_name }}</h3>
+                  <div class="table-container inner-table-container" *ngIf="getDeviceDetails(zone.zone_name).length > 0">
+                    <table mat-table [dataSource]="getDeviceDetails(zone.zone_name)" class="device-details-table">
+                      <!-- Device Name Column -->
+                      <ng-container matColumnDef="device_name">
+                        <th mat-header-cell *matHeaderCellDef>Device Name</th>
+                        <td mat-cell *matCellDef="let device">{{ device.device_name }}</td>
+                      </ng-container>
+
+                      <!-- CPU Peak % Column -->
+                      <ng-container matColumnDef="cpu_peak_percent">
+                        <th mat-header-cell *matHeaderCellDef>CPU Peak %</th>
+                        <td mat-cell *matCellDef="let device" [ngClass]="getRiskClass(device.cpu_peak_percent)">{{ device.cpu_peak_percent }}</td>
+                      </ng-container>
+
+                      <!-- CPU Peak Count Column -->
+                      <ng-container matColumnDef="cpu_peak_count">
+                        <th mat-header-cell *matHeaderCellDef>CPU Peak Count</th>
+                        <td mat-cell *matCellDef="let device">{{ device.cpu_peak_count }}</td>
+                      </ng-container>
+
+                      <!-- CPU Peak Duration Column -->
+                      <ng-container matColumnDef="cpu_peak_duration_min">
+                        <th mat-header-cell *matHeaderCellDef>CPU Peak Duration (min)</th>
+                        <td mat-cell *matCellDef="let device">{{ device.cpu_peak_duration_min }}</td>
+                      </ng-container>
+
+                      <!-- Memory Peak % Column -->
+                      <ng-container matColumnDef="memory_peak_percent">
+                        <th mat-header-cell *matHeaderCellDef>Memory Peak %</th>
+                        <td mat-cell *matCellDef="let device" [ngClass]="getRiskClass(device.memory_peak_percent)">{{ device.memory_peak_percent }}</td>
+                      </ng-container>
+
+                      <!-- Memory Peak Count Column -->
+                      <ng-container matColumnDef="memory_peak_count">
+                        <th mat-header-cell *matHeaderCellDef>Memory Peak Count</th>
+                        <td mat-cell *matCellDef="let device">{{ device.memory_peak_count }}</td>
+                      </ng-container>
+
+                      <!-- Memory Peak Duration Column -->
+                      <ng-container matColumnDef="memory_peak_duration_min">
+                        <th mat-header-cell *matHeaderCellDef>Memory Peak Duration (min)</th>
+                        <td mat-cell *matCellDef="let device">{{ device.memory_peak_duration_min }}</td>
+                      </ng-container>
+
+                      <tr mat-header-row *matHeaderRowDef="deviceDetailsColumns"></tr>
+                      <tr mat-row *matRowDef="let row; columns: deviceDetailsColumns"></tr>
+                    </table>
+                  </div>
+                  <div *ngIf="getDeviceDetails(zone.zone_name).length === 0 && !loadingDashboard" class="no-devices">
+                    Loading device details...
+                  </div>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="zoneSummaryColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: zoneSummaryColumns"
+              class="element-row"
+              [class.expanded-row]="isZoneExpanded(row.zone_name)">
+          </tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loadingDashboard" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <!-- Device/Zone Management Section -->
+  <mat-card class="management-card">
+    <mat-card-header>
+      <mat-card-title>Device & Zone Management</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Action Buttons -->
+      <div class="management-buttons">
+        <button
+          mat-raised-button
+          [color]="activeMode === 'device' ? 'primary' : 'accent'"
+          (click)="setActiveMode('device')"
+          class="modify-button"
+        >
+          Modify Device
+        </button>
+        <button
+          mat-raised-button
+          [color]="activeMode === 'zone' ? 'primary' : 'accent'"
+          (click)="setActiveMode('zone')"
+          class="modify-button"
+        >
+          Modify Zone
+        </button>
+      </div>
+
+      <!-- Modify Device Form -->
+      <div *ngIf="activeMode === 'device'" class="management-form">
+        <form [formGroup]="deviceForm" (ngSubmit)="submitDeviceForm()" class="capacity-form">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width-input">
+              <mat-label>Select Action</mat-label>
+              <mat-select formControlName="action">
+                <mat-option value="ADD DEVICE">ADD DEVICE</mat-option>
+                <mat-option value="EDIT DEVICE">EDIT DEVICE</mat-option>
+                <mat-option value="DELETE DEVICE">DELETE DEVICE</mat-option>
+              </mat-select>
+              <mat-error *ngIf="deviceForm.get('action')?.hasError('required')">Action is required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Zone Name - Required for all actions -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width-input">
+              <mat-label>Zone Name</mat-label>
+              <mat-select formControlName="zone_name" (selectionChange)="deviceForm.patchValue({device_name: ''})">
+                <mat-option *ngFor="let zone of availableZones" [value]="zone.zone_name">
+                  {{ zone.zone_name }} ({{ zone.region_name }})
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="deviceForm.get('zone_name')?.hasError('required')">Zone Name is required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Device Name - Only shown after zone is selected -->
+          <div class="form-row" *ngIf="deviceForm.get('zone_name')?.value">
+            <!-- For ADD DEVICE: Text input for new device name -->
+            <mat-form-field *ngIf="deviceForm.get('action')?.value === 'ADD DEVICE'" appearance="outline" class="full-width-input">
+              <mat-label>Device Name</mat-label>
+              <input matInput formControlName="device_name" placeholder="Enter new device name">
+              <mat-error *ngIf="deviceForm.get('device_name')?.hasError('required')">Device Name is required</mat-error>
+            </mat-form-field>
+
+            <!-- For EDIT and DELETE: Show devices mapped to that zone -->
+            <mat-form-field *ngIf="deviceForm.get('action')?.value === 'EDIT DEVICE' || deviceForm.get('action')?.value === 'DELETE DEVICE'" appearance="outline" class="full-width-input">
+              <mat-label>Device Name</mat-label>
+              <mat-select formControlName="device_name">
+                <mat-option *ngFor="let device of getDevicesForZone(deviceForm.get('zone_name')?.value)" [value]="device">
+                  {{ device }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="deviceForm.get('device_name')?.hasError('required')">Device Name is required</mat-error>
+              <mat-hint *ngIf="getDevicesForZone(deviceForm.get('zone_name')?.value).length === 0">
+                No devices found for this zone
+              </mat-hint>
+            </mat-form-field>
+          </div>
+
+          <!-- New Device Name - Required for EDIT -->
+          <div class="form-row" *ngIf="deviceForm.get('action')?.value === 'EDIT DEVICE'">
+            <mat-form-field appearance="outline" class="full-width-input">
+              <mat-label>New Device Name</mat-label>
+              <input matInput formControlName="new_device_name" placeholder="Enter new device name" required>
+              <mat-error *ngIf="deviceForm.get('new_device_name')?.hasError('required') && deviceForm.get('new_device_name')?.touched">New Device Name is required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="submit-button">
+            <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+            {{ loading ? 'Submitting...' : 'Submit' }}
+          </button>
+        </form>
+      </div>
+
+      <!-- Modify Zone Form -->
+      <div *ngIf="activeMode === 'zone'" class="management-form">
+        <form [formGroup]="zoneForm" (ngSubmit)="submitZoneForm()" class="capacity-form">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width-input">
+              <mat-label>Select Action</mat-label>
+              <mat-select formControlName="action">
+                <mat-option value="ADD ZONE">ADD ZONE</mat-option>
+                <mat-option value="EDIT ZONE">EDIT ZONE</mat-option>
+                <mat-option value="DELETE ZONE">DELETE ZONE</mat-option>
+              </mat-select>
+              <mat-error *ngIf="zoneForm.get('action')?.hasError('required')">Action is required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Region Name - Required for all actions -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width-input">
+              <mat-label>Region Name</mat-label>
+              <mat-select formControlName="region_name" (selectionChange)="zoneForm.patchValue({zone_name: ''})">
+                <mat-option *ngFor="let region of availableRegions" [value]="region">
+                  {{ region }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="zoneForm.get('region_name')?.hasError('required')">Region Name is required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Zone Name - Only shown after region is selected -->
+          <div class="form-row" *ngIf="zoneForm.get('region_name')?.value">
+            <!-- For ADD: Text input for new zone name -->
+            <mat-form-field *ngIf="zoneForm.get('action')?.value === 'ADD ZONE'" appearance="outline" class="full-width-input">
+              <mat-label>Zone Name</mat-label>
+              <input matInput formControlName="zone_name" placeholder="Enter zone name">
+              <mat-error *ngIf="zoneForm.get('zone_name')?.hasError('required')">Zone Name is required</mat-error>
+            </mat-form-field>
+
+            <!-- For EDIT and DELETE: Show only zones in selected region -->
+            <mat-form-field *ngIf="zoneForm.get('action')?.value === 'EDIT ZONE' || zoneForm.get('action')?.value === 'DELETE ZONE'" appearance="outline" class="full-width-input">
+              <mat-label>Zone Name</mat-label>
+              <mat-select formControlName="zone_name">
+                <mat-option *ngFor="let zone of getZonesForRegion(zoneForm.get('region_name')?.value)" [value]="zone.zone_name">
+                  {{ zone.zone_name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="zoneForm.get('zone_name')?.hasError('required')">Zone Name is required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- New Zone Name - Required for EDIT -->
+          <div class="form-row" *ngIf="zoneForm.get('action')?.value === 'EDIT ZONE'">
+            <mat-form-field appearance="outline" class="full-width-input">
+              <mat-label>New Zone Name</mat-label>
+              <input matInput formControlName="new_zone_name" placeholder="Enter new zone name" required>
+              <mat-error *ngIf="zoneForm.get('new_zone_name')?.hasError('required') && zoneForm.get('new_zone_name')?.touched">New Zone Name is required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="submit-button">
+            <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+            {{ loading ? 'Submitting...' : 'Submit' }}
+          </button>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+</div>

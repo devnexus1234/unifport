@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: unified-portal-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+      - ./frontend/dist/unified-portal:/usr/share/nginx/html:ro
+    networks:
+      - unified-portal-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+    labels:
+      - "com.unified-portal.service=nginx"
+      - "com.unified-portal.type=reverse-proxy"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: unified-portal-backend
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - DATABASE_URL=${DATABASE_URL}
+    networks:
+      - unified-portal-network
+    restart: unless-stopped
+    labels:
+      - "com.unified-portal.service=backend"
+      - "com.unified-portal.type=api"
+
+networks:
+  unified-portal-network:
+    driver: bridge
