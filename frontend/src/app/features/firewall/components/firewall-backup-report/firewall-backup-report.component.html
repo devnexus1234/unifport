@@ -1,0 +1,101 @@
+<div class="firewall-backup-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>Backup Logs Dashboard</h1>
+  </div>
+
+  <!-- Overall Summary Section -->
+  <div class="section-container">
+    <h2>Overall Summary</h2>
+    <div class="summary-table-container">
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Total Devices</th>
+            <th>Success</th>
+            <th>Failed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ summary.total_devices }}</td>
+            <td class="success-text">{{ summary.success_count }}</td>
+            <td class="failed-text">{{ summary.failed_count }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Backup Report Section -->
+  <div class="section-container">
+    <h2>Backup Report</h2>
+    <div class="filter-container">
+      <label for="dateFilter">Filter by Date:</label>
+      <input type="date" id="dateFilter" [(ngModel)]="selectedDate" (change)="onDateChange()">
+      <button (click)="clearDateFilter()" *ngIf="selectedDate">Clear</button>
+    </div>
+    <div class="report-table-container">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Task Date</th>
+            <th>Task Name</th>
+            <th>Host Count</th>
+            <th>Failed Count</th>
+            <th>Failed Hosts</th>
+            <th>Successful Hosts</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let report of reports">
+            <td>{{ report.task_date }}</td>
+            <td>{{ report.task_name }}</td>
+            <td>{{ report.host_count }}</td>
+            <td>{{ report.failed_count }}</td>
+            <td class="failed-hosts-cell">{{ report.failed_hosts || '-' }}</td>
+            <td class="success-text">{{ report.host_count - report.failed_count }}</td>
+          </tr>
+          <tr *ngIf="reports.length === 0 && !isLoading">
+            <td colspan="6" class="no-data">No backup records found</td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="isLoading" class="loading">Loading...</div>
+    </div>
+  </div>
+
+  <!-- Task Report Form Section -->
+  <div class="section-container">
+    <h2>Task Report</h2>
+    <div class="task-form-container">
+      <div class="form-group">
+        <label for="backupType">Backup Type:</label>
+        <select id="backupType" [(ngModel)]="taskBackupType">
+          <option value="" disabled selected>Select Backup Type</option>
+          <option value="config">config</option>
+          <option value="system/device">system/device</option>
+          <option value="traffic log">traffic log</option>
+          <option value="tape">tape</option>
+          <option value="migrate export">migrate export</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="deviceType">Device Type:</label>
+        <select id="deviceType" [(ngModel)]="taskDeviceType">
+          <option value="" disabled selected>Select Device Type</option>
+          <option value="Checkpoint FW">Checkpoint FW</option>
+          <option value="Checkpoint MGMT">Checkpoint MGMT</option>
+          <option value="Paloalto FW">Paloalto FW</option>
+          <option value="Panorama">Panorama</option>
+          <option value="Cisco ASA">Cisco ASA</option>
+          <option value="Cisco FTD">Cisco FTD</option>
+          <option value="F5">F5</option>
+        </select>
+      </div>
+      
+      <button class="submit-btn" (click)="submitTaskReport()" [disabled]="!taskBackupType || !taskDeviceType">Submit</button>
+    </div>
+  </div>
+</div>

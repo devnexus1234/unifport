@@ -3,7 +3,7 @@
 
 set -e
 
-cd /home/rohit/github/unified-portal/backend
+cd /home/demo/github/unified-portal/backend
 
 echo "=== Fixing SQLAlchemy Python 3.13 compatibility ==="
 echo ""

@@ -129,6 +129,17 @@ def seed_menus():
                 "display_order": 2,
                 "is_enabled": True
             },
+            {
+                "name": "Firewall Backup Report",
+                "description": "View firewall backup summary and logs",
+                "menu_id": created_menus["Firewall"].id,
+                "category_id": default_category.id,
+                "icon": "backup_table",
+                "frontend_route": "/catalogues/firewall/backup-report",
+                "api_endpoint": "/api/v1/firewall/backup-report",
+                "display_order": 3,
+                "is_enabled": True
+            },
             # Linux catalogues
             {
                 "name": "Linux Server Management",

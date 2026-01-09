@@ -9,7 +9,7 @@ sudo apt-get install -y libldap2-dev libsasl2-dev
 
 echo ""
 echo "=== Installing Python dependencies ==="
-cd /home/rohit/github/unified-portal/backend
+cd /home/demo/github/unified-portal/backend
 
 if [ ! -d "venv" ]; then
     echo "Creating virtual environment..."

@@ -1,0 +1,70 @@
+<div class="task-report-container">
+  <div class="header">
+    <h1>Task Report Details</h1>
+  </div>
+
+  <div class="details-card">
+    <div class="detail-item">
+      <span class="label">Backup Type:</span>
+      <span class="value">{{ backupType }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="label">Device Type:</span>
+      <span class="value">{{ deviceType }}</span>
+    </div>
+  </div>
+
+  <div class="filter-section">
+    <h3>Date Range Filter</h3>
+    <div class="filter-group">
+      <label for="startDate">Start Date:</label>
+      <input type="date" id="startDate" [(ngModel)]="startTime" (change)="onDateChange()">
+    </div>
+    <div class="filter-group">
+      <label for="endDate">End Date:</label>
+      <input type="date" id="endDate" [(ngModel)]="endTime" (change)="onDateChange()">
+    </div>
+  </div>
+
+  <div class="results-section">
+    <h3>Report Details</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Device Type</th>
+            <th>Backup Type</th>
+            <th>Date of Backup</th>
+            <th>Hostname</th>
+            <th>IP</th>
+            <th>Backup Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of displayedReportItems">
+            <td>{{ item.deviceType }}</td>
+            <td>{{ item.backupType }}</td>
+            <td>{{ item.backupDate }}</td>
+            <td>{{ item.hostname }}</td>
+            <td>{{ item.ip }}</td>
+            <td>
+              <span [class.status-success]="item.status === 'Success'" 
+                    [class.status-failed]="item.status === 'Failed'">
+                {{ item.status }}
+              </span>
+            </td>
+          </tr>
+          <tr *ngIf="displayedReportItems.length === 0">
+            <td colspan="6" class="no-data">No records found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+
+
+  <div class="actions">
+    <a routerLink="/catalogues/firewall/backup-report" class="back-link">← Back to Backup Report</a>
+  </div>
+</div>

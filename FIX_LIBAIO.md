@@ -5,7 +5,7 @@ This error has been fixed permanently in the Dockerfile and entrypoint.sh. You j
 ## Quick Fix (Run This Now)
 
 ```bash
-cd /home/rohit/github/unified-portal
+cd /home/demo/github/unified-portal
 docker-compose build --no-cache backend
 ```
 

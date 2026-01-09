@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-cd /home/rohit/github/unified-portal
+cd /home/demo/github/unified-portal
 
 echo "=== Step 1: Starting Oracle Database ==="
 make oracle-start 2>&1

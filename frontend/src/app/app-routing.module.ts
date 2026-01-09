@@ -11,6 +11,8 @@ import { ValidatedHostnamesComponent } from './modules/linux/morning-checklist/c
 import { AdminGuard } from './guards/admin.guard';
 import { CapacityFirewallReportComponent } from './components/capacity-firewall-report/capacity-firewall-report.component';
 import { CapacityNetworkReportComponent } from './components/capacity-network-report/capacity-network-report.component';
+import { FirewallBackupReportComponent } from './features/firewall/components/firewall-backup-report/firewall-backup-report.component';
+import { FirewallTaskReportComponent } from './features/firewall/components/firewall-task-report/firewall-task-report.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -47,8 +49,18 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'catalogues/firewall/backup-report',
+    component: FirewallBackupReportComponent,
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'catalogues/network/capacity-report',
     component: CapacityNetworkReportComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'catalogues/firewall/task-report',
+    component: FirewallTaskReportComponent,
     canActivate: [AuthGuard]
   },
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
